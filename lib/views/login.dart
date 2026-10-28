@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:momsonteaching_app/views/registration.dart';
+import 'package:momsonteaching_app/views/teacher/teacher_dashboard.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -36,6 +37,17 @@ class _LoginState extends State<Login> {
           ),
         ),
       );
+
+      if(userType=='Teacher'){
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>  TeacherDashboard(),
+          ),
+        );
+
+      }
 
       // Add your login API call here.
     }
