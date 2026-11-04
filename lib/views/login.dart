@@ -43,7 +43,7 @@ class _LoginState extends State<Login> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>  TeacherDashboard(),
+            builder: (context) =>  DashboardScreen(),
           ),
         );
 
