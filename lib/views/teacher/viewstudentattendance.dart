@@ -2,16 +2,30 @@ import 'package:flutter/material.dart';
 
 
 
-class ViewStudentScreen extends StatelessWidget {
+class ViewStudentScreen extends StatefulWidget {
   const ViewStudentScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    const primaryNavy = Color(0xFF0F1B33);
+  State<ViewStudentScreen> createState() => _ViewStudentScreenState();
+}
 
+class _ViewStudentScreenState extends State<ViewStudentScreen> {
+  // State variables for academic report dropdowns
+  String _selectedYear = '2026';
+  String _selectedExamType = 'Quarterly Exam';
+  bool _reportSubmitted = false;
+
+  final List _academicResults = [
+  {'subject': 'Maths', 'grade': '92 %'},
+  {'subject': 'Physics', 'grade': '83 %'},
+  {'subject': 'Chemistry', 'grade': '78 %'},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primaryNavy,
+        backgroundColor: const Color(0xFF141E46),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
@@ -19,23 +33,24 @@ class ViewStudentScreen extends StatelessWidget {
         ),
         title: const Text(
           'View Student',
-          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Student Profile Card
+            // Profile Card
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF2F2F2),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withOpacity(0.04),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -45,64 +60,74 @@ class ViewStudentScreen extends StatelessWidget {
                 children: [
                   const CircleAvatar(
                     radius: 36,
-                    backgroundColor: primaryNavy,
+                    backgroundColor: Color(0xFF0D1B2A),
                     child: Icon(Icons.person, size: 45, color: Colors.white),
                   ),
                   const SizedBox(height: 12),
                   const Text(
                     'Robin T P',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
                   ),
                   const SizedBox(height: 4),
-                  Text(
+                  const Text(
                     '10 th std',
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700], fontWeight: FontWeight.w500),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey),
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Info Rows
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                children: [
-                  _buildInfoRow('Mobile number', '10th std'),
-                  const SizedBox(height: 12),
-                  _buildInfoRow('Parent', 'Radhika'),
                 ],
               ),
             ),
             const SizedBox(height: 16),
 
-            // Attendance Section Header with visibility icon
+            // Info rows
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
                 children: [
-                  const Text(
-                    'Attendance',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                  Row(
+                    children: const [
+                      SizedBox(width: 100, child: Text('Mobile number', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87))),
+                      Text(':', style: TextStyle(fontWeight: FontWeight.bold)),
+                      SizedBox(width: 24),
+                      Text('10th std', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                    ],
                   ),
-                  const Icon(Icons.visibility, color: primaryNavy, size: 20),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: const [
+                      SizedBox(width: 100, child: Text('Parent', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black87))),
+                      Text(':', style: TextStyle(fontWeight: FontWeight.bold)),
+                      SizedBox(width: 24),
+                      Text('Radhika', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                    ],
+                  ),
                 ],
               ),
             ),
+            const SizedBox(height: 24),
+
+            // Attendance Header
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text(
+                  'Attendance',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                ),
+                Icon(Icons.visibility_outlined, color: Color(0xFF141E46)),
+              ],
+            ),
             const SizedBox(height: 12),
 
-            // Calendar Card Container
+            // Calendar Card (June 2026)
             Container(
-              width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF2ECE9),
+                color: const Color(0xFFEFECE9),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
                 ],
@@ -111,145 +136,353 @@ class ViewStudentScreen extends StatelessWidget {
                 children: [
                   const Text(
                     'June 2026',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primaryNavy),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF141E46)),
                   ),
                   const SizedBox(height: 16),
-
-                  // Days of the week headers
-                  const Row(
+                  // Weekday headers
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text('S', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
-                      Text('M', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                      Text('T', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                      Text('W', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                      Text('T', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                      Text('F', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                      Text('S', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                    ],
+                    children: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+                        .map((day) => Text(day, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black54)))
+                        .toList(),
                   ),
                   const SizedBox(height: 12),
-
-                  // Calendar Grid / Rows
+                  // Calendar dates custom layout matching image
                   _buildCalendarGrid(),
-
-                  const SizedBox(height: 24),
-
-                  // Total Absent Days Summary
+                  const SizedBox(height: 16),
                   const Text(
                     'Total Absent days : 3',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 14),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
+
+            // Home Works Header
+            const Text(
+              'Home Works',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            ),
+            const SizedBox(height: 12),
+
+            // Date picker pill
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFDCDDDE),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    '03-11-2026',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF141E46)),
+                  ),
+                  Icon(Icons.calendar_month_outlined, color: Colors.black87),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Homework Cards
+            _buildHomeworkCard(
+              title: 'Maths Equation Problem',
+              description: 'Description : do the problems in page 1',
+              status: 'Completed',
+              statusColor: Colors.teal,
+              dueDate: '27-12-2026',
+            ),
+            _buildHomeworkCard(
+              title: 'Maths Equation Problem',
+              description: 'Description : do the problems in page 1',
+              status: 'Pending',
+              statusColor: Colors.amber.shade800,
+              dueDate: '27-12-2026',
+            ),
+            _buildHomeworkCard(
+              title: 'Maths Equation Problem',
+              description: 'Description : do the problems in page 1',
+              status: 'Overdue',
+              statusColor: Colors.red.shade700,
+              dueDate: '27-12-2026',
+            ),
+            const SizedBox(height: 24),
+
+            // Upcoming Exams Header
+            const Text(
+              'Upcoming Exams',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            ),
+            const SizedBox(height: 12),
+
+            // Exam Cards
+            _buildExamCard(title: 'Maths Test', time: '27-12-2026 10:00 AM'),
+            _buildExamCard(title: 'Science Test', time: '27-12-2026 10:00 AM'),
+            const SizedBox(height: 24),
+
+            // Academic Reports Header
+            const Text(
+              'Academic Reports',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            ),
+            const SizedBox(height: 12),
+
+            // Dropdowns row
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDCDDDE),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _selectedYear,
+                        isExpanded: true,
+                        items: ['2025', '2026', '2027'].map((String value) {
+                          return DropdownMenuItem<String>(value: value, child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)));
+                        }).toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            _selectedYear = newValue!;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDCDDDE),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _selectedExamType,
+                        isExpanded: true,
+                        items: ['Quarterly Exam', 'Half Yearly Exam', 'Annual Exam'].map((String value) {
+                          return DropdownMenuItem<String>(value: value, child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)));
+                        }).toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            _selectedExamType = newValue!;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // Submit Button
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF141E46),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _reportSubmitted = true;
+                  });
+                },
+                child: const Text('Submit', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Results Table
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black87),
+              ),
+              child: Table(
+                border: TableBorder.all(color: Colors.black87),
+                columnWidths: const {
+                  0: FlexColumnWidth(1),
+                  1: FlexColumnWidth(1),
+                },
+                children: [
+                  TableRow(
+                    decoration: const BoxDecoration(color: Color(0xFFDCDDDE)),
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Text('Subject', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Text('Grade', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                      ),
+                    ],
+                  ),
+                  ..._academicResults.map((result) {
+                    return TableRow(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text(result['subject']!, style: const TextStyle(fontWeight: FontWeight.w600), textAlign: TextAlign.center),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text(result['grade']!, style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 4,
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-        ),
-        const Text(':', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-        const SizedBox(width: 16),
-        Expanded(
-          flex: 5,
-          child: Text(
-            value,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black87),
-          ),
-        ),
-      ],
-    );
-  }
-
+  // Custom calendar layout helper matching the screenshot
   Widget _buildCalendarGrid() {
-    // Exact layout representation matching June 2026 in the design screenshot
-    final List<List<String?>> weeks = [
-      [null, '1', '2', '3', '4', '5', '6'],
-      ['7', '8', '9', '10', '11', '12', '13'],
-      ['14', '15', '16', '17', '18', '19', '20'],
-      ['21', '22', '23', '24', '25', '26', '27'],
-      ['28', '29', '30', null, null, null, null],
+    final List<String> days = [
+      '31', '1', '2', '3', '4', '5', '6',
+      '7', '8', '9', '10', '11', '12', '13',
+      '14', '15*', '16', '17', '18', '19', '20',
+      '21', '22', '23', '24*', '25', '26', '27',
+      '28', '29*', '30', ''
     ];
 
-    // Absent dates marked with red X in the design: 15, 24, 30
-    final absentDays = ['15', '24', '30'];
-    // Sundays (highlighted in red)
-    final sundayDays = ['7', '14', '21', '28'];
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 7,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+      ),
+      itemCount: days.length,
+      itemBuilder: (context, index) {
+        String day = days[index];
+        bool isAbsent = day.endsWith('*');
+        if (isAbsent) day = day.replaceAll('*', '');
 
-    return Column(
-      children: weeks.map((week) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: week.map((day) {
-              if (day == null) {
-                return const SizedBox(width: 30, height: 30);
-              }
+        if (day.isEmpty) return const SizedBox();
 
-              bool isAbsent = absentDays.contains(day);
-              bool isSunday = sundayDays.contains(day);
-
-              return SizedBox(
-                width: 30,
-                height: 30,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Text(
-                      day,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: isSunday ? Colors.red : Colors.black,
-                      ),
-                    ),
-                    if (isAbsent)
-                      const CustomPaint(
-                        size: Size(26, 26),
-                        painter: CrossPainter(),
-                      ),
-                  ],
+        return Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isAbsent ? Colors.red.withOpacity(0.1) : Colors.transparent,
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Text(
+                day,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: isAbsent ? Colors.red : Colors.black87,
                 ),
-              );
-            }).toList(),
+              ),
+              if (isAbsent)
+                const Icon(Icons.close, size: 22, color: Colors.red),
+            ],
           ),
         );
-      }).toList(),
+      },
     );
   }
-}
 
-// Custom Painter to draw the red X marks over absent dates
-class CrossPainter extends CustomPainter {
-  const CrossPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.red
-      ..strokeWidth = 2.5
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawLine(const Offset(0, 0), Offset(size.width, size.height), paint);
-    canvas.drawLine(Offset(0, size.height), Offset(size.width, 0), paint);
+  // Helper widget for Homework items
+  Widget _buildHomeworkCard({
+    required String title,
+    required String description,
+    required String status,
+    required Color statusColor,
+    required String dueDate,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.menu_book_outlined, size: 32, color: Colors.black87),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87)),
+                const SizedBox(height: 4),
+                Text(description, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Text('Status : ', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                    Text(status, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: statusColor)),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text('Due date :$dueDate', style: const TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w500)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
-    throw UnimplementedError();
+  // Helper widget for Upcoming Exams items
+  Widget _buildExamCard({required String title, required String time}) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.note_alt_outlined, size: 32, color: Colors.black87),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87)),
+              const SizedBox(height: 4),
+              Text('From : $time', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              Text('From : $time', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

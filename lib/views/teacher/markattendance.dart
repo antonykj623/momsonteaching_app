@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 
 
-class StudentAttendance {
-  final String name;
-  bool isPresent;
-
-  StudentAttendance({required this.name, required this.isPresent});
-}
 
 class MarkAttendanceScreen extends StatefulWidget {
   const MarkAttendanceScreen({super.key});
@@ -16,24 +10,38 @@ class MarkAttendanceScreen extends StatefulWidget {
 }
 
 class _MarkAttendanceScreenState extends State<MarkAttendanceScreen> {
+  // Dropdown states
   String _selectedClass = 'Class';
   String _selectedDivision = 'Division';
-  String _selectedMonth = 'June 2026';
+  String _selectedDate = '26 June 2026';
 
-  // Sample student list matching the design preview
-  final List<StudentAttendance> _students = [
-    StudentAttendance(name: 'Greeshma T P', isPresent: true),
-    StudentAttendance(name: 'Robin Kurian', isPresent: false),
-    StudentAttendance(name: 'Robin Kurian', isPresent: true),
+  // State model for students' attendance tracking
+  final List _students = [
+  {
+  'name': 'Greeshma T P',
+  'attendance': 'P', // 'P', 'L', or 'A'
+  'time1': '11:00 AM',
+  'time2': '12:00 PM',
+  },
+  {
+  'name': 'Greeshma T P',
+  'attendance': 'L',
+  'time1': '11:00 AM',
+  'time2': '12:00 PM',
+  },
+  {
+  'name': 'Greeshma T P',
+  'attendance': 'A',
+  'time1': '11:00 AM',
+  'time2': '12:00 PM',
+  },
   ];
 
   @override
   Widget build(BuildContext context) {
-    const primaryNavy = Color(0xFF0F1B33);
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primaryNavy,
+        backgroundColor: const Color(0xFF141E46),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
@@ -41,7 +49,7 @@ class _MarkAttendanceScreenState extends State<MarkAttendanceScreen> {
         ),
         title: const Text(
           'Mark Attendance',
-          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
       body: Column(
@@ -51,25 +59,26 @@ class _MarkAttendanceScreenState extends State<MarkAttendanceScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  // Class and Division Dropdown Filters
+                  // Class & Division Dropdowns Row
                   Row(
                     children: [
                       Expanded(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black54),
-                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.black12),
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              value: _selectedClass == 'Class' ? null : _selectedClass,
-                              hint: const Text('Class', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
-                              icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
-                              items: ['Class 9', 'Class 10'].map((String value) {
+                              value: _selectedClass,
+                              isExpanded: true,
+                              icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black87),
+                              items: ['Class', '10th Standard', '9th Standard'].map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
-                                  child: Text(value),
+                                  child: Text(value, style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
                                 );
                               }).toList(),
                               onChanged: (newValue) {
@@ -81,23 +90,24 @@ class _MarkAttendanceScreenState extends State<MarkAttendanceScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black54),
-                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.black12),
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
-                              value: _selectedDivision == 'Division' ? null : _selectedDivision,
-                              hint: const Text('Division', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500)),
-                              icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
-                              items: ['Division A', 'Division B'].map((String value) {
+                              value: _selectedDivision,
+                              isExpanded: true,
+                              icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black87),
+                              items: ['Division', 'Section A', 'Section B'].map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
-                                  child: Text(value),
+                                  child: Text(value, style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
                                 );
                               }).toList(),
                               onChanged: (newValue) {
@@ -111,102 +121,55 @@ class _MarkAttendanceScreenState extends State<MarkAttendanceScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
-                  // Month Selector Dropdown (Full Width)
+                  // Date Selection Dropdown/Pill
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black54),
-                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.black12),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        value: _selectedMonth,
-                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
-                        items: ['June 2026', 'July 2026', 'August 2026'].map((String value) {
+                        value: _selectedDate,
+                        isExpanded: true,
+                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black87),
+                        items: ['26 June 2026', '27 June 2026', '28 June 2026'].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
+                            child: Text(value, style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
                           );
                         }).toList(),
                         onChanged: (newValue) {
                           setState(() {
-                            _selectedMonth = newValue!;
+                            _selectedDate = newValue!;
                           });
                         },
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
 
-                  // Student List Cards with Interactive Checkmarks
-                  ListView.separated(
+                  // List of Student Attendance Cards
+                  ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: _students.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       final student = _students[index];
-                      return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF6F5F3),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            const CircleAvatar(
-                              radius: 24,
-                              backgroundColor: primaryNavy,
-                              child: Icon(Icons.person, size: 30, color: Colors.white),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                student.name,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            // Interactive status indicator toggle (Tap to mark present/absent)
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  student.isPresent = !student.isPresent;
-                                });
-                              },
-                              child: student.isPresent
-                                  ? Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
-                                ),
-                                padding: const EdgeInsets.all(4),
-                                child: const Icon(Icons.check, color: Colors.white, size: 18),
-                              )
-                                  : Container(
-                                width: 24,
-                                height: 24,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[500],
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      return _buildStudentCard(
+                        name: student['name'],
+                        attendance: student['attendance'],
+                        time1: student['time1'],
+                        time2: student['time2'],
+                        onStatusChanged: (status) {
+                          setState(() {
+                            _students[index]['attendance'] = status;
+                          });
+                        },
                       );
                     },
                   ),
@@ -215,30 +178,136 @@ class _MarkAttendanceScreenState extends State<MarkAttendanceScreen> {
             ),
           ),
 
-          // Submit Data Button at Bottom
-          Padding(
+          // Bottom Submit Button Area
+          Container(
             padding: const EdgeInsets.all(16.0),
+            color: Colors.white,
             child: SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryNavy,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  backgroundColor: const Color(0xFF141E46),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 0,
                 ),
                 onPressed: () {
                   // Handle submission logic here
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Attendance submitted successfully!')),
+                  );
                 },
                 child: const Text(
                   'Submit Data',
-                  style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Helper widget to build individual student attendance item card[cite: 6]
+  Widget _buildStudentCard({
+    required String name,
+    required String attendance,
+    required String time1,
+    required String time2,
+    required ValueChanged<String> onStatusChanged,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Profile Avatar
+          const CircleAvatar(
+            radius: 28,
+            backgroundColor: Color(0xFF0D1B2A),
+            child: Icon(Icons.person, size: 36, color: Colors.white),
+          ),
+          const SizedBox(width: 16),
+
+          // Student details & Attendance status selectors
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    _buildStatusButton('P', Colors.green.shade800, attendance == 'P', () => onStatusChanged('P')),
+                    const SizedBox(width: 8),
+                    _buildStatusButton('L', Colors.amber.shade900, attendance == 'L', () => onStatusChanged('L')),
+                    const SizedBox(width: 8),
+                    _buildStatusButton('A', Colors.red.shade700, attendance == 'A', () => onStatusChanged('A')),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    _buildTimeChip(time1),
+                    const SizedBox(width: 10),
+                    _buildTimeChip(time2),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper widget for status toggle choice buttons (P, L, A)[cite: 6]
+  Widget _buildStatusButton(String label, Color activeColor, bool isSelected, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 34,
+        height: 34,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isSelected ? activeColor : Colors.grey.shade600,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+      ),
+    );
+  }
+
+  // Helper widget for time slot labels[cite: 6]
+  Widget _buildTimeChip(String time) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFDCDDDE),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        time,
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black87),
       ),
     );
   }

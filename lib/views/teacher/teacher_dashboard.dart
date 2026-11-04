@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:momsonteaching_app/views/teacher/studentlist.dart';
 
+import 'homeworklist.dart';
+import 'markattendance.dart';
+
 
 
 class DashboardScreen extends StatefulWidget {
@@ -166,7 +169,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     icon: Icons.calendar_today_outlined,
                     color: const Color(0xFF4A8420),
                     onTap: () {
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>  MarkAttendanceScreen(),
+                        ),
+                      );
                     },
                   ),
                   _buildDashboardCard(
@@ -185,13 +193,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onTap: () {
 
 
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>  HomeworkListScreen(),
+                        ),
+                      );
+
+
+
                     },
                   ),
                   _buildDashboardCard(
                     title: 'Important Notes',
                     icon: Icons.note_alt_outlined,
                     color: const Color(0xFF26B3CC),
-                    onTap: () {},
+                    onTap: () {
+
+
+
+
+                    },
                   ),
                   _buildDashboardCard(
                     title: 'View Reports',
