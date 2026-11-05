@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:momsonteaching_app/views/teacher/studentlist.dart';
 
+import 'attendancereport.dart';
+import 'classroom.dart';
 import 'homeworklist.dart';
+import 'importantnotes.dart';
 import 'markattendance.dart';
 
 
@@ -184,6 +187,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onTap: () {
 
 
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>  ClassRoomScreen(),
+                        ),
+                      );
+
                     },
                   ),
                   _buildDashboardCard(
@@ -212,6 +222,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onTap: () {
 
 
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>  ImportantNotesScreen(),
+                        ),
+                      );
 
 
                     },
@@ -220,7 +236,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     title: 'View Reports',
                     icon: Icons.bar_chart_outlined,
                     color: const Color(0xFF223832),
-                    onTap: () {},
+                    onTap: () {
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>  AttendanceDetailScreen(),
+                        ),
+                      );
+
+
+                    },
                   ),
                 ],
               ),
