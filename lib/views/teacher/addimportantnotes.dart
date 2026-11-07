@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
 class AddImportantNotesScreen extends StatefulWidget {
   const AddImportantNotesScreen({super.key});
 
@@ -20,6 +18,9 @@ class _AddImportantNotesScreenState extends State<AddImportantNotesScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+  // File upload state
+  String? _attachedFileName;
+
   @override
   void dispose() {
     _searchStudentController.dispose();
@@ -28,15 +29,24 @@ class _AddImportantNotesScreenState extends State<AddImportantNotesScreen> {
     super.dispose();
   }
 
+  // Mock file picker function (Replace with file_picker package if needed)
+  void _pickFile() {
+    // Simulated file selection for demonstration
+    setState(() {
+      _attachedFileName = 'important_document_2026.pdf';
+    });
+    debugShowSnackBar('File attached successfully!');
+  }
+
   void _handleSubmitData() {
     // Handle form submission based on the active tab
     if (_selectedTab == 0) {
       debugShowSnackBar(
-        'Submitted Class-wise Note: Class: $_selectedClass, Div: $_selectedDivision, Title: ${_titleController.text}',
+        'Submitted Class-wise Note: Class: $_selectedClass, Div: $_selectedDivision, Title: ${_titleController.text}, File: ${_attachedFileName ?? "None"}',
       );
     } else {
       debugShowSnackBar(
-        'Submitted Student-wise Note: Student: ${_searchStudentController.text}, Title: ${_titleController.text}',
+        'Submitted Student-wise Note: Student: ${_searchStudentController.text}, Title: ${_titleController.text}, File: ${_attachedFileName ?? "None"}',
       );
     }
   }
@@ -237,7 +247,60 @@ class _AddImportantNotesScreenState extends State<AddImportantNotesScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
+
+            // --- FILE UPLOAD SECTION ---
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Attachment',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black87),
+                ),
+                const SizedBox(height: 8),
+                InkWell(
+                  onTap: _pickFile,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade400, style: BorderStyle.solid),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.attach_file, color: primaryNavy),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            _attachedFileName ?? 'Upload document or image (Optional)',
+                            style: TextStyle(
+                              color: _attachedFileName != null ? Colors.black87 : Colors.black54,
+                              fontSize: 15,
+                              fontWeight: _attachedFileName != null ? FontWeight.w600 : FontWeight.normal,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (_attachedFileName != null)
+                          IconButton(
+                            icon: const Icon(Icons.close, size: 20, color: Colors.red),
+                            onPressed: () {
+                              setState(() {
+                                _attachedFileName = null;
+                              });
+                            },
+                          )
+                        else
+                          const Icon(Icons.upload_file, color: Colors.black54),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
 
             // Submit Data Button
             SizedBox(

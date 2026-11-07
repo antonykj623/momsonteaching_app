@@ -153,6 +153,9 @@ class _MarkAttendanceScreenState extends State<MarkAttendanceScreen> {
                   ),
                   const SizedBox(height: 16),
 
+                  TextButton(onPressed: (){}, child: Text("Mark all present",style: TextStyle(fontSize: 12),))
+                 , const SizedBox(height: 16),
+
                   // List of Student Attendance Cards
                   ListView.builder(
                     shrinkWrap: true,
