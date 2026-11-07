@@ -13,10 +13,14 @@ class _ViewStudentScreenState extends State<ViewStudentScreen> {
   String _selectedExamType = 'Quarterly Exam';
   bool _reportSubmitted = false;
 
+  // State variables for attendance filters
+  String _selectedAttendanceMonth = 'June';
+  String _selectedAttendanceYear = '2026';
+
   final List _academicResults = [
-  {'subject': 'Maths', 'grade': '92 %'},
-  {'subject': 'Physics', 'grade': '83 %'},
-  {'subject': 'Chemistry', 'grade': '78 %'},
+    {'subject': 'Maths', 'grade': '92 %'},
+    {'subject': 'Physics', 'grade': '83 %'},
+    {'subject': 'Chemistry', 'grade': '78 %'},
   ];
 
   @override
@@ -139,7 +143,7 @@ class _ViewStudentScreenState extends State<ViewStudentScreen> {
     );
   }
 
-  // --- ATTENDANCE SECTION ---
+  // --- ATTENDANCE SECTION (With Month/Year & Absent/Late Dates) ---
   Widget _buildAttendanceSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,10 +159,97 @@ class _ViewStudentScreenState extends State<ViewStudentScreen> {
           ],
         ),
         const SizedBox(height: 12),
+        // Month and Year Selection Dropdowns for Attendance
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFDCDDDE),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _selectedAttendanceMonth,
+                    isExpanded: true,
+                    items: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                        .map((String month) {
+                      return DropdownMenuItem<String>(value: month, child: Text(month, style: const TextStyle(fontWeight: FontWeight.bold)));
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedAttendanceMonth = newValue!;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFDCDDDE),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _selectedAttendanceYear,
+                    isExpanded: true,
+                    items: ['2025', '2026', '2027'].map((String year) {
+                      return DropdownMenuItem<String>(value: year, child: Text(year, style: const TextStyle(fontWeight: FontWeight.bold)));
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedAttendanceYear = newValue!;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        // Attendance Stats Cards (Present, Absent, Late)
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                title: 'Present',
+                count: '24',
+                color: Colors.teal,
+                icon: Icons.check_circle_outline,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildStatCard(
+                title: 'Absent',
+                count: '3',
+                color: Colors.red,
+                icon: Icons.cancel_outlined,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _buildStatCard(
+                title: 'Late',
+                count: '2',
+                color: Colors.amber.shade800,
+                icon: Icons.access_time_rounded,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        // Detailed Absent and Late Dates List Card
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFFEFECE9),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
@@ -167,26 +258,26 @@ class _ViewStudentScreenState extends State<ViewStudentScreen> {
                 offset: const Offset(0, 4),
               ),
             ],
+            border: Border.all(color: Colors.grey.shade200),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'June 2026',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF141E46)),
+              Text(
+                'Logs for $_selectedAttendanceMonth $_selectedAttendanceYear',
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF141E46)),
               ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-                    .map((day) => Text(day, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black54)))
-                    .toList(),
+              const Divider(height: 20),
+              _buildDateDetailRow(
+                label: 'Absent Dates',
+                dates: '15 June 2026, 24 June 2026, 29 June 2026',
+                color: Colors.red,
               ),
               const SizedBox(height: 12),
-              _buildCalendarGrid(),
-              const SizedBox(height: 16),
-              const Text(
-                'Total Absent days : 3',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 14),
+              _buildDateDetailRow(
+                label: 'Late Dates',
+                dates: '08 June 2026, 19 June 2026',
+                color: Colors.amber.shade800,
               ),
             ],
           ),
@@ -195,53 +286,73 @@ class _ViewStudentScreenState extends State<ViewStudentScreen> {
     );
   }
 
-  Widget _buildCalendarGrid() {
-    final List<String> days = [
-      '31', '1', '2', '3', '4', '5', '6',
-      '7', '8', '9', '10', '11', '12', '13',
-      '14', '15*', '16', '17', '18', '19', '20',
-      '21', '22', '23', '24*', '25', '26', '27',
-      '28', '29*', '30', ''
-    ];
-
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 7,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
+  Widget _buildStatCard({
+    required String title,
+    required String count,
+    required Color color,
+    required IconData icon,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
       ),
-      itemCount: days.length,
-      itemBuilder: (context, index) {
-        String day = days[index];
-        bool isAbsent = day.endsWith('*');
-        if (isAbsent) day = day.replaceAll('*', '');
-
-        if (day.isEmpty) return const SizedBox();
-
-        return Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isAbsent ? Colors.red.withOpacity(0.1) : Colors.transparent,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 8),
+          Text(
+            count,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Text(
-                day,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: isAbsent ? Colors.red : Colors.black87,
-                ),
-              ),
-              if (isAbsent)
-                const Icon(Icons.close, size: 22, color: Colors.red),
-            ],
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Colors.black54,
+            ),
           ),
-        );
-      },
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateDetailRow({required String label, required String dates, required Color color}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: color),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Text(
+            dates,
+            style: const TextStyle(fontSize: 13, color: Colors.black ?? Colors.black87, fontWeight: FontWeight.w500),
+          ),
+        ),
+      ],
     );
   }
 
