@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:momsonteaching_app/views/parent/parentdashboard.dart';
 import 'package:momsonteaching_app/views/registration.dart';
 import 'package:momsonteaching_app/views/teacher/teacher_dashboard.dart';
 
@@ -44,6 +45,16 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(
             builder: (context) =>  DashboardScreen(),
+          ),
+        );
+
+      }
+      else if(userType=='Parents'){
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>  MomsonTeachingScreen(),
           ),
         );
 
