@@ -12,16 +12,54 @@ class _ViewStudentScreenState extends State<ChildProfileScreen> {
   String _selectedYear = '2026';
   String _selectedExamType = 'Quarterly Exam';
   bool _reportSubmitted = false;
+  String _activeAcademicTab = 'Overview'; // Overview, Trends, Remarks
 
   // State variables for attendance filters
   String _selectedAttendanceMonth = 'June';
   String _selectedAttendanceYear = '2026';
 
-  final List _academicResults = [
-    {'subject': 'Maths', 'grade': '92 %'},
-    {'subject': 'Physics', 'grade': '83 %'},
-    {'subject': 'Chemistry', 'grade': '78 %'},
-  ];
+  // Enhanced reactive tuition data including individual tests, weak topics, and teacher feedback
+  final Map<String, dynamic> _tuitionData = {
+    'Maths': {
+      'grade': '92 %',
+      'status': 'Excellent',
+      'statusColor': Colors.green,
+      'tests': [
+        {'name': 'Test #1 (Algebra)', 'score': '88%'},
+        {'name': 'Test #2 (Calculus Basics)', 'score': '95%'},
+        {'name': 'Weekly Quiz #3', 'score': '93%'}
+      ],
+      'needsImprovement': 'Trigonometric Identities',
+      'remarks': 'Exceptional problem-solving speed. Keep up the consistent homework discipline.'
+    },
+    'Physics': {
+      'grade': '83 %',
+      'status': 'Good',
+      'statusColor': Colors.blue,
+      'tests': [
+        {'name': 'Test #1 (Mechanics)', 'score': '78%'},
+        {'name': 'Test #2 (Kinematics)', 'score': '85%'},
+        {'name': 'Weekly Quiz #3', 'score': '86%'}
+      ],
+      'needsImprovement': 'Electromagnetic Induction numericals',
+      'remarks': 'Shows good grasp of concepts but needs more practice with vector diagrams.'
+    },
+    'Chemistry': {
+      'grade': '78 %',
+      'status': 'Needs Focus',
+      'statusColor': Colors.orange,
+      'tests': [
+        {'name': 'Test #1 (Organic)', 'score': '72%'},
+        {'name': 'Test #2 (Thermodynamics)', 'score': '80%'},
+        {'name': 'Weekly Quiz #3', 'score': '82%'}
+      ],
+      'needsImprovement': 'Reaction Mechanisms & Balancing Equations',
+      'remarks': 'Improving steadily after recent tutoring sessions on organic pathways.'
+    },
+  };
+
+  // Expanded state for accordion dropdowns per subject
+  final Map<String, bool> _expandedSubjects = {};
 
   @override
   Widget build(BuildContext context) {
@@ -349,7 +387,7 @@ class _ViewStudentScreenState extends State<ChildProfileScreen> {
           padding: const EdgeInsets.only(left: 16.0),
           child: Text(
             dates,
-            style: const TextStyle(fontSize: 13, color: Colors.black ?? Colors.black87, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 13, color: Colors.black87, fontWeight: FontWeight.w500),
           ),
         ),
       ],
@@ -507,127 +545,363 @@ class _ViewStudentScreenState extends State<ChildProfileScreen> {
     );
   }
 
-  // --- ACADEMIC PROGRESS SECTION ---
+  // --- UPGRADED ACADEMIC PROGRESS SECTION ---
   Widget _buildAcademicReportsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Academic Progress',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFDCDDDE),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _selectedYear,
-                    isExpanded: true,
-                    items: ['2025', '2026', '2027'].map((String value) {
-                      return DropdownMenuItem<String>(value: value, child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)));
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedYear = newValue!;
-                      });
-                    },
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              flex: 2,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFDCDDDE),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _selectedExamType,
-                    isExpanded: true,
-                    items: ['Quarterly Exam', 'Half Yearly Exam', 'Annual Exam'].map((String value) {
-                      return DropdownMenuItem<String>(value: value, child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)));
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedExamType = newValue!;
-                      });
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Center(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF141E46),
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            onPressed: () {
-              setState(() {
-                _reportSubmitted = true;
-              });
-            },
-            child: const Text('Submit', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black87),
-          ),
-          child: Table(
-            border: TableBorder.all(color: Colors.black87),
-            columnWidths: const {
-              0: FlexColumnWidth(1),
-              1: FlexColumnWidth(1),
-            },
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header & Auto-Sync Indicator
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TableRow(
-                decoration: const BoxDecoration(color: Color(0xFFDCDDDE)),
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: Text('Subject', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: Text('Grade', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                  ),
-                ],
+              const Text(
+                'Academic Progress',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF141E46)),
               ),
-              ..._academicResults.map((result) {
-                return TableRow(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(result['subject']!, style: const TextStyle(fontWeight: FontWeight.w600), textAlign: TextAlign.center),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(result['grade']!, style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                    ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: const [
+                    Icon(Icons.sync, size: 12, color: Colors.green),
+                    SizedBox(width: 4),
+                    Text('Auto-Synced', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.green)),
                   ],
-                );
-              }).toList(),
+                ),
+              ),
             ],
           ),
+          const SizedBox(height: 14),
+
+          // Filters Row (Year & Exam Type)
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0F2F5),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedYear,
+                      isExpanded: true,
+                      items: ['2025', '2026', '2027'].map((String value) {
+                        return DropdownMenuItem<String>(value: value, child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)));
+                      }).toList(),
+                      onChanged: (newValue) => setState(() => _selectedYear = newValue!),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0F2F5),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedExamType,
+                      isExpanded: true,
+                      items: ['Quarterly Exam', 'Half Yearly Exam', 'Annual Exam', 'Unit Tests (Live)'].map((String value) {
+                        return DropdownMenuItem<String>(value: value, child: Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)));
+                      }).toList(),
+                      onChanged: (newValue) => setState(() => _selectedExamType = newValue!),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+
+          // Sub-navigation Tabs (Scores vs Trends vs Remarks)
+          Row(
+            children: [
+              _buildTabButton('Scores & Tests', 'Overview'),
+              const SizedBox(width: 8),
+              _buildTabButton('Trend Analysis', 'Trends'),
+              const SizedBox(width: 8),
+              _buildTabButton('Teacher Remarks', 'Remarks'),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Dynamic Content based on selected tab
+          if (_activeAcademicTab == 'Overview') _buildScoresAndTestsList(),
+          if (_activeAcademicTab == 'Trends') _buildTrendAnalysisView(),
+          if (_activeAcademicTab == 'Remarks') _buildTeacherRemarksView(),
+
+          const SizedBox(height: 16),
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF141E46),
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              onPressed: () {
+                setState(() {
+                  _reportSubmitted = true;
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Academic report view refreshed successfully!')),
+                );
+              },
+              child: const Text('Submit / Refresh', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabButton(String title, String tabKey) {
+    bool isSelected = _activeAcademicTab == tabKey;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _activeAcademicTab = tabKey),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF141E46) : const Color(0xFFF0F2F5),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.black87,
+              fontWeight: FontWeight.bold,
+              fontSize: 11,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 1. Subject-wise Test Scores & Expandable Test Details
+  Widget _buildScoresAndTestsList() {
+    return Column(
+      children: _tuitionData.entries.map((entry) {
+        String subject = entry.key;
+        var data = entry.value;
+        bool isExpanded = _expandedSubjects[subject] ?? false;
+
+        return Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFAFAFA),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: Column(
+            children: [
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                title: Text(subject, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                subtitle: Text('Status: ${data['status']}', style: TextStyle(color: data['statusColor'], fontSize: 12, fontWeight: FontWeight.w600)),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF141E46).withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(data['grade'], style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF141E46))),
+                    ),
+                    const SizedBox(width: 6),
+                    IconButton(
+                      icon: Icon(isExpanded ? Icons.expand_less : Icons.expand_more, color: Colors.grey),
+                      onPressed: () => setState(() => _expandedSubjects[subject] = !isExpanded),
+                    ),
+                  ],
+                ),
+              ),
+              if (isExpanded) ...[
+                const Divider(height: 1, color: Colors.grey),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Individual Tuition Test Breakdown:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
+                      const SizedBox(height: 6),
+                      ...((data['tests'] as List).map((test) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('• ${test['name']}', style: const TextStyle(fontSize: 13)),
+                            Text(test['score'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                          ],
+                        ),
+                      ))),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.lightbulb_outline, size: 16, color: Colors.amber),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Needs Focus: ${data['needsImprovement']}',
+                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black87),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  // 2. Trend Analysis / Improvement Graph View
+  Widget _buildTrendAnalysisView() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Score Progression Over Time', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+          const SizedBox(height: 4),
+          const Text('Comparing Unit Test 1, Test 2, and Quarterly Exams', style: TextStyle(color: Colors.grey, fontSize: 11)),
+          const SizedBox(height: 16),
+          // Visual Mock Graph Bars
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              _buildTrendBar('Maths', 0.88, 0.95, 0.92, Colors.indigo),
+              _buildTrendBar('Physics', 0.78, 0.85, 0.83, Colors.blue),
+              _buildTrendBar('Chemistry', 0.72, 0.80, 0.78, Colors.teal),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Divider(),
+          const SizedBox(height: 8),
+          Row(
+            children: const [
+              Icon(Icons.trending_up, size: 18, color: Colors.green),
+              SizedBox(width: 6),
+              Text('Overall growth: +6.4% improvement \n compared to last term.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.green)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrendBar(String subject, double t1, double t2, double q, Color color) {
+    return Column(
+      children: [
+        Text(subject, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+        const SizedBox(height: 8),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            _buildBarColumn('${(t1 * 100).toInt()}%', t1, color.withOpacity(0.4), 'T1'),
+            const SizedBox(width: 4),
+            _buildBarColumn('${(t2 * 100).toInt()}%', t2, color.withOpacity(0.7), 'T2'),
+            const SizedBox(width: 4),
+            _buildBarColumn('${(q * 100).toInt()}%', q, color, 'Q'),
+          ],
         ),
       ],
+    );
+  }
+
+  Widget _buildBarColumn(String label, double heightFactor, Color color, String testLabel) {
+    return Column(
+      children: [
+        Container(
+          width: 22,
+          height: heightFactor * 100,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(testLabel, style: const TextStyle(fontSize: 9, color: Colors.grey)),
+      ],
+    );
+  }
+
+  // 3. Teacher Remarks & Feedback View
+  Widget _buildTeacherRemarksView() {
+    return Column(
+      children: _tuitionData.entries.map((entry) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFAFAFA),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(entry.key, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF141E46))),
+                  const Text('Tutor Feedback', style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.w600)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                '"${entry.value['remarks']}"',
+                style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 12, color: Colors.black87),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 }
