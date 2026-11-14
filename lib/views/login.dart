@@ -3,6 +3,8 @@ import 'package:momsonteaching_app/views/parent/parentdashboard.dart';
 import 'package:momsonteaching_app/views/registration.dart';
 import 'package:momsonteaching_app/views/teacher/teacher_dashboard.dart';
 
+import 'adminpanel/admindashboard.dart';
+
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -55,6 +57,16 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(
             builder: (context) =>  MomsonTeachingScreen(),
+          ),
+        );
+
+      }
+      else if(userType=='Admin'){
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>  AdminPanelScreen(),
           ),
         );
 
