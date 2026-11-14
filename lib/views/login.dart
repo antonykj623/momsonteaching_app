@@ -71,6 +71,16 @@ class _LoginState extends State<Login> {
         );
 
       }
+      else if(userType=='Super Admin'){
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>  AdminPanelScreen(),
+          ),
+        );
+
+      }
 
       // Add your login API call here.
     }
