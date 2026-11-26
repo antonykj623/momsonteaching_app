@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ViewStudentScreen extends StatefulWidget {
-  const ViewStudentScreen({super.key});
+class ChildProfileScreen extends StatefulWidget {
+  const ChildProfileScreen({super.key});
 
   @override
-  State<ViewStudentScreen> createState() => _ViewStudentScreenState();
+  State<ChildProfileScreen> createState() => _ViewStudentScreenState();
 }
 
-class _ViewStudentScreenState extends State<ViewStudentScreen> {
+class _ViewStudentScreenState extends State<ChildProfileScreen> {
   // State variables for academic report dropdowns
   String _selectedYear = '2026';
   String _selectedExamType = 'Quarterly Exam';
@@ -74,7 +74,7 @@ class _ViewStudentScreenState extends State<ViewStudentScreen> {
             onPressed: () {},
           ),
           title: const Text(
-            'View Student',
+            'Rohan Krishna',
             style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           bottom: const TabBar(
@@ -668,7 +668,7 @@ class _ViewStudentScreenState extends State<ViewStudentScreen> {
                   _reportSubmitted = true;
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Academic reports data synced successfully!')),
+                  const SnackBar(content: Text('Academic report view refreshed successfully!')),
                 );
               },
               child: const Text('Submit / Refresh', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
@@ -827,7 +827,7 @@ class _ViewStudentScreenState extends State<ViewStudentScreen> {
             children: const [
               Icon(Icons.trending_up, size: 18, color: Colors.green),
               SizedBox(width: 6),
-              Text('Overall growth: +6.4% improvement\n compared to last term.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.green)),
+              Text('Overall growth: +6.4% improvement \n compared to last term.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.green)),
             ],
           ),
         ],

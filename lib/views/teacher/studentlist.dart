@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:momsonteaching_app/views/teacher/viewstudentattendance.dart';
+
+import '../parent/childprofile.dart';
+
 
 
 
@@ -206,7 +208,7 @@ class _StudentListScreenState extends State<StudentListScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>  ViewStudentScreen(),
+                                builder: (context) =>  ChildProfileScreen(),
                               ),
                             );
                           },
